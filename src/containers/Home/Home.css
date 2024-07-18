@@ -1,0 +1,13 @@
+.search {
+    height: 250px;
+}
+
+.info {
+    top: 45px;
+}
+
+.chooser {
+    width: 371px;
+    overflow: auto;
+    max-height: 150px;
+}
