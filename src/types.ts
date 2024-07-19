@@ -4,10 +4,7 @@ export interface Show {
 }
 
 export interface CurrentShow {
-  img: {
-    original: string;
-  };
+  image: string;
   name: string;
   summary: string;
-  score: string;
 }

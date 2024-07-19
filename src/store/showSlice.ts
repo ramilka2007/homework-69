@@ -1,13 +1,19 @@
-import { Show } from '../types';
+import {CurrentShow, Show} from '../types';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axiosApi from '../axiosApi';
 
 interface ShowState {
   shows: Show[];
+  currentShow: CurrentShow;
 }
 
 export const initialState: ShowState = {
   shows: [],
+  currentShow: {
+    name: '',
+    summary: '',
+    image: '',
+  },
 };
 
 export const fetchShows = createAsyncThunk<void, string>(
@@ -21,6 +27,12 @@ export const fetchShows = createAsyncThunk<void, string>(
     }
   },
 );
+
+export const fetchCurrentShow = createAsyncThunk<void, string>('show/fetchCurrentShow', async (id: string) => {
+  const {data: currentShow} = await axiosApi.get<Show[]>(`/shows/${id}`);
+  console.log(currentShow);
+  return currentShow || null;
+})
 
 export const showSlice = createSlice({
   name: 'show',
@@ -41,6 +53,16 @@ export const showSlice = createSlice({
 
       state.shows = allShows;
     });
+
+    builder.addCase(fetchCurrentShow.fulfilled, (state: ShowState, action) => {
+      if(action.payload) {
+        state.currentShow = {
+          name: action.payload.name,
+          image: action.payload.image.original,
+          summary: action.payload.summary,
+      }
+      }
+    })
   },
 });
 
