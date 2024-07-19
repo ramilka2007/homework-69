@@ -50,9 +50,6 @@ export const showSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchShows.pending, (state: ShowState) => {
-        state.isLoading = true;
-      })
       .addCase(fetchShows.fulfilled, (state: ShowState, action) => {
         const allShows: Show[] = [];
 
@@ -66,14 +63,14 @@ export const showSlice = createSlice({
         }
 
         state.shows = allShows;
-        state.isLoading = false;
       })
       .addCase(fetchShows.rejected, (state: ShowState) => {
-        state.isLoading = false;
         state.isError = true;
       });
 
-    builder
+    builder.addCase(fetchCurrentShow.pending, (state: ShowState) => {
+        state.isLoading = true
+    })
       .addCase(
         fetchCurrentShow.fulfilled,
         (state: ShowState, { payload: info }: PayloadAction<CurrentShow>) => {
@@ -84,9 +81,11 @@ export const showSlice = createSlice({
               summary: info.summary,
             };
           }
+          state.isLoading = false
         },
       )
       .addCase(fetchCurrentShow.rejected, (state: ShowState) => {
+          state.isLoading = false;
         state.isError = true;
       });
   },
