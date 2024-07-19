@@ -1,12 +1,13 @@
 import './App.css';
 import Toolbar from './components/Toolbar';
-import Home from "./containers/Home/Home";
+import Home from './containers/Home/Home';
 
 const App = () => {
   return (
     <>
       <Toolbar />
-        <Home/>
+
+      <Home />
     </>
   );
 };

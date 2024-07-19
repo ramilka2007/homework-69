@@ -1,70 +1,52 @@
 import React from 'react';
-import './Home.css'
-import {NavLink} from "react-router-dom";
+import './Home.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchShows } from '../../store/showSlice';
+import { AppDispatch, RootState } from '../../app/store';
+import { Autocomplete, TextField } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
-    const [name, setName] = React.useState({
-        showName: ''
-    });
+  const dispatch: AppDispatch = useDispatch();
+  const navigate = useNavigate();
 
-    const [shows, setShows] = React.useState(['katy perry', 'marry derry']);
+  const shows = useSelector((state: RootState) => state.show.shows);
 
-    const changeName = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setName((prev) => ({
-            ...prev,
-            [event.target.name]: event.target.value,
-        }));
-    };
+  const showSelector = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    dispatch(fetchShows(event.target.value));
+  };
+
+  const selectShow = (id: string) => {
+    navigate('/shows/' + id);
+  };
+
   return (
-      <div className="d-flex">
-          <div className="search w-50 text-end pe-5">
-              <h2>Search for TV show:</h2>
-          </div>
-          <div className="w-50 position-relative">
-              <div className="text-start">
-                  <input type="text" id="showName" name="showName" value={name.showName} className="w-75 mt-1"
-                         onChange={changeName}/>
-              </div>
-              <div className='info position-absolute'>
-                  <ul className="chooser border border-2 list-inline h-100">
-                      {shows.map((show) => (
-                          <>
-                              <li>
-                                  <NavLink to="/">
-                                      {show}
-                                  </NavLink>
-                              </li><li>
-                                  <NavLink to="/">
-                                      {show}
-                                  </NavLink>
-                              </li><li>
-                                  <NavLink to="/">
-                                      {show}
-                                  </NavLink>
-                              </li><li>
-                                  <NavLink to="/">
-                                      {show}
-                                  </NavLink>
-                              </li><li>
-                                  <NavLink to="/">
-                                      {show}
-                                  </NavLink>
-                              </li><li>
-                                  <NavLink to="/">
-                                      {show}
-                                  </NavLink>
-                              </li><li>
-                                  <NavLink to="/">
-                                      {show}
-                                  </NavLink>
-                              </li>
-                          </>
-
-                      ))}
-                  </ul>
-              </div>
-          </div>
+    <div className="d-flex">
+      <div className="search w-50 text-end pe-5">
+        <h2>Search for TV show:</h2>
       </div>
+      <div className="w-50">
+        <Autocomplete
+          disablePortal
+          id="combo-box-demo"
+          options={shows}
+          sx={{ width: 300 }}
+          getOptionLabel={(option) => option.name}
+          getOptionKey={(option) => option.id}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
+          onChange={(e, value) => selectShow(value.id)}
+          renderInput={(params) => (
+            <TextField
+              onChange={(e) => showSelector(e)}
+              {...params}
+              label="TV shows"
+            />
+          )}
+        />
+      </div>
+    </div>
   );
 };
 
